@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autoavaliação de TDAH</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom styles for color blindness */
+        .protanopia {
+            filter: url('#protanopia');
+        }
+        .deuteranopia {
+            filter: url('#deuteranopia');
+        }
+        .tritanopia {
+            filter: url('#tritanopia');
+        }
+        
+        /* Custom checkbox style */
+        .custom-checkbox {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+            position: relative;
+            margin-right: 10px;
+        }
+        .custom-checkbox:checked {
+            background-color: #3b82f6;
+            border-color: #3b82f6;
+        }
+        .custom-checkbox:checked::after {
+            content: "✓";
+            position: absolute;
+            color: white;
+            font-size: 16px;
+            left: 4px;
+            top: 0;
+        }
+        
+        /* Animation for progress bar */
+        @keyframes progress {
+            0% { width: 0%; }
+            100% { width: var(--progress); }
+        }
+        .progress-bar {
+            animation: progress 0.5s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+    <!-- SVG filters for color blindness simulation -->
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="0">
+        <filter id="protanopia">
+            <feColorMatrix type="matrix" values="0.567,0.433,0,0,0  0.558,0.442,0,0,0  0,0.242,0.758,0,0  0,0,0,1,0" />
+        </filter>
+        <filter id="deuteranopia">
+            <feColorMatrix type="matrix" values="0.625,0.375,0,0,0  0.7,0.3,0,0,0  0,0.3,0.7,0,0  0,0,0,1,0" />
+        </filter>
+        <filter id="tritanopia">
+            <feColorMatrix type="matrix" values="0.95,0.05,0,0,0  0,0.433,0.567,0,0  0,0.475,0.525,0,0  0,0,0,1,0" />
+        </filter>
+    </svg>
+
+    <!-- Header -->
+    <header class="bg-blue-600 text-white shadow-md">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-3xl font-bold">TDAH Check</h1>
+                    <p class="text-blue-100">Autoavaliação para Transtorno de Déficit de Atenção e Hiperatividade</p>
+                </div>
+                <button id="settings-btn" class="bg-blue-700 hover:bg-blue-800 text-white p-3 rounded-full transition">
+                    <i class="fas fa-cog text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Settings Panel (hidden by default) -->
+    <div id="settings-panel" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-gray-800">Configurações de Acessibilidade</h2>
+                <button id="close-settings" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold mb-3 text-gray-700">Modo de Cores para Daltonismo</h3>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="color-mode" value="normal" class="h-5 w-5 text-blue-600" checked>
+                        <span class="text-gray-700">Normal</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="color-mode" value="protanopia" class="h-5 w-5 text-blue-600">
+                        <span class="text-gray-700">Protanopia (vermelho-verde)</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="color-mode" value="deuteranopia" class="h-5 w-5 text-blue-600">
+                        <span class="text-gray-700">Deuteranopia (vermelho-verde)</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="color-mode" value="tritanopia" class="h-5 w-5 text-blue-600">
+                        <span class="text-gray-700">Tritanopia (azul-amarelo)</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold mb-3 text-gray-700">Tamanho do Texto</h3>
+                <div class="flex items-center space-x-4">
+                    <button id="decrease-font" class="bg-gray-200 hover:bg-gray-300 rounded-full w-10 h-10 flex items-center justify-center">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <span id="font-size-display" class="text-lg">Médio</span>
+                    <button id="increase-font" class="bg-gray-200 hover:bg-gray-300 rounded-full w-10 h-10 flex items-center justify-center">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="flex justify-end">
+                <button id="apply-settings" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition">
+                    Aplicar Configurações
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Introduction Section -->
+        <section id="intro-section" class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Sobre o TDAH</h2>
+            <div class="prose max-w-none text-gray-700">
+                <p class="mb-4">O Transtorno de Déficit de Atenção e Hiperatividade (TDAH) é uma condição neurobiológica que afeta crianças e adultos, caracterizada por desatenção, hiperatividade e impulsividade.</p>
+                <p class="mb-4">Esta ferramenta não substitui um diagnóstico profissional, mas pode ajudar a identificar sinais que merecem atenção. Responda às perguntas com base em seus comportamentos nos últimos 6 meses.</p>
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-circle text-yellow-400 text-xl"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-yellow-700">
+                                <strong>Importante:</strong> Este teste não é um diagnóstico. Consulte um profissional de saúde para avaliação completa.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <button id="start-test" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition">
+                    Iniciar Teste
+                </button>
+            </div>
+        </section>
+
+        <!-- Test Section (hidden by default) -->
+        <section id="test-section" class="hidden bg-white rounded-lg shadow-md p-6 mb-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">Questionário de Autoavaliação</h2>
+                <div class="text-gray-600">
+                    <span id="current-question">1</span> de <span id="total-questions">18</span>
+                </div>
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-6">
+                <div id="progress-bar" class="progress-bar bg-blue-600 h-2.5 rounded-full" style="--progress: 5%;"></div>
+            </div>
+            
+            <!-- Question Container -->
+            <div id="question-container" class="space-y-6">
+                <!-- Questions will be loaded here dynamically -->
+            </div>
+            
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between mt-8">
+                <button id="prev-btn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-lg font-medium transition hidden">
+                    <i class="fas fa-arrow-left mr-2"></i> Anterior
+                </button>
+                <button id="next-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition ml-auto">
+                    Próxima <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+                <button id="submit-btn" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium transition hidden">
+                    Finalizar <i class="fas fa-check ml-2"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- Results Section (hidden by default) -->
+        <section id="results-section" class="hidden bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Resultado da Autoavaliação</h2>
+            
+            <div class="flex flex-col md:flex-row gap-6 mb-8">
+                <!-- Score Card -->
+                <div class="bg-gray-50 rounded-lg p-6 flex-1">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-4">Seu Resultado</h3>
+                    <div class="flex items-center justify-center mb-4">
+                        <div class="relative w-40 h-40">
+                            <svg class="w-full h-full" viewBox="0 0 100 100">
+                                <!-- Background circle -->
+                                <circle cx="50" cy="50" r="45" fill="none" stroke="#e5e7eb" stroke-width="10"/>
+                                <!-- Progress circle -->
+                                <circle id="score-circle" cx="50" cy="50" r="45" fill="none" stroke="#3b82f6" stroke-width="10" 
+                                        stroke-dasharray="283" stroke-dashoffset="283" stroke-linecap="round"
+                                        transform="rotate(-90 50 50)"/>
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span id="score-percent" class="text-4xl font-bold text-gray-800">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p id="score-text" class="text-center text-gray-600">Responda todas as perguntas para ver seu resultado.</p>
+                </div>
+                
+                <!-- Interpretation -->
+                <div class="bg-gray-50 rounded-lg p-6 flex-1">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-4">Interpretação</h3>
+                    <div id="interpretation" class="prose max-w-none text-gray-700">
+                        <p>Seu resultado será exibido aqui após completar o questionário.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Detailed Results -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-gray-700 mb-4">Detalhes por Área</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-blue-50 rounded-lg p-4">
+                        <h4 class="font-medium text-blue-800 mb-2">Desatenção</h4>
+                        <div class="h-2 bg-blue-200 rounded-full mb-2">
+                            <div id="inattention-bar" class="h-2 bg-blue-600 rounded-full" style="width: 0%"></div>
+                        </div>
+                        <p id="inattention-score" class="text-sm text-blue-800">0/9</p>
+                    </div>
+                    <div class="bg-purple-50 rounded-lg p-4">
+                        <h4 class="font-medium text-purple-800 mb-2">Hiperatividade</h4>
+                        <div class="h-2 bg-purple-200 rounded-full mb-2">
+                            <div id="hyperactivity-bar" class="h-2 bg-purple-600 rounded-full" style="width: 0%"></div>
+                        </div>
+                        <p id="hyperactivity-score" class="text-sm text-purple-800">0/9</p>
+                    </div>
+                    <div class="bg-green-50 rounded-lg p-4">
+                        <h4 class="font-medium text-green-800 mb-2">Impulsividade</h4>
+                        <div class="h-2 bg-green-200 rounded-full mb-2">
+                            <div id="impulsivity-bar" class="h-2 bg-green-600 rounded-full" style="width: 0%"></div>
+                        </div>
+                        <p id="impulsivity-score" class="text-sm text-green-800">0/9</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Next Steps -->
+            <div class="bg-blue-50 rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-blue-800 mb-3">Próximos Passos</h3>
+                <div id="next-steps" class="prose max-w-none text-blue-700">
+                    <p>Se você marcou vários sintomas que estão afetando sua vida diária, considere:</p>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li>Agendar uma consulta com um psiquiatra ou neurologista</li>
+                        <li>Buscar avaliação com um psicólogo especializado</li>
+                        <li>Manter um diário de seus sintomas para mostrar ao profissional</li>
+                        <li>Conversar com pessoas próximas sobre suas observações</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="mt-6 flex justify-between">
+                <button id="retake-test" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-lg font-medium transition">
+                    <i class="fas fa-redo mr-2"></i> Refazer Teste
+                </button>
+                <button id="find-professional" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition">
+                    Encontrar Profissional <i class="fas fa-external-link-alt ml-2"></i>
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between">
+                <div class="mb-6 md:mb-0">
+                    <h3 class="text-xl font-bold mb-4">TDAH Check</h3>
+                    <p class="text-gray-400 max-w-md">
+                        Uma ferramenta de autoavaliação para ajudar a identificar possíveis sinais de TDAH.
+                        Não substitui diagnóstico profissional.
+                    </p>
+                </div>
+                <div class="grid grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="text-lg font-semibold mb-4">Links Úteis</h4>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="text-gray-400 hover:text-white transition">Sobre TDAH</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition">Recursos</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition">Profissionais</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold mb-4">Contato</h4>
+                        <ul class="space-y-2">
+                            <li class="text-gray-400">contato@tdahcheck.com</li>
+                            <li class="text-gray-400">(11) 99999-9999</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
+                <p>© 2023 TDAH Check. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Questions for the test (based on DSM-5 criteria)
+        const questions = [
+            // Inattention symptoms (1-9)
+            {
+                text: "Com que frequência você tem dificuldade em manter a atenção em tarefas ou atividades recreativas?",
+                category: "inattention"
+            },
+            {
+                text: "Com que frequência você parece não ouvir quando as pessoas falam diretamente com você?",
+                category: "inattention"
+            },
+            {
+                text: "Com que frequência você tem dificuldade em seguir instruções e não termina tarefas ou deveres?",
+                category: "inattention"
+            },
+            {
+                text: "Com que frequência você tem dificuldade em organizar tarefas e atividades?",
+                category: "inattention"
+            },
+            {
+                text: "Com que frequência você evita, não gosta ou reluta em fazer tarefas que exigem esforço mental prolongado?",
+                category: "inattention"
+            },
+            {
+                text: "Com que frequência você perde coisas necessárias para tarefas ou atividades?",
+                category: "inattention"
+            },
+            {
+                text: "Com que frequência você se distrai facilmente com estímulos externos?",
+                category: "inattention"
+            },
+            {
+                text: "Com que frequência você esquece atividades cotidianas?",
+                category: "inattention"
+            },
+            {
+                text: "Com que frequência você tem dificuldade em manter o foco em conversas ou leituras longas?",
+                category: "inattention"
+            },
+            
+            // Hyperactivity symptoms (10-15)
+            {
+                text: "Com que frequência você se agita, bate as mãos ou pés ou se remexe na cadeira?",
+                category: "hyperactivity"
+            },
+            {
+                text: "Com que frequência você se levanta em situações onde deveria permanecer sentado?",
+                category: "hyperactivity"
+            },
+            {
+                text: "Com que frequência você corre ou sobe em coisas em situações inapropriadas?",
+                category: "hyperactivity"
+            },
+            {
+                text: "Com que frequência você tem dificuldade em brincar ou se envolver em atividades de lazer calmamente?",
+                category: "hyperactivity"
+            },
+            {
+                text: "Com que frequência você está 'a mil por hora', agindo como se estivesse 'ligado em um motor'?",
+                category: "hyperactivity"
+            },
+            {
+                text: "Com que frequência você fala excessivamente?",
+                category: "hyperactivity"
+            },
+            
+            // Impulsivity symptoms (16-18)
+            {
+                text: "Com que frequência você responde antes que as perguntas tenham sido concluídas?",
+                category: "impulsivity"
+            },
+            {
+                text: "Com que frequência você tem dificuldade em esperar sua vez?",
+                category: "impulsivity"
+            },
+            {
+                text: "Com que frequência você interrompe ou se intromete em conversas ou atividades de outros?",
+                category: "impulsivity"
+            }
+        ];
+
+        // App state
+        let currentQuestion = 0;
+        let answers = Array(questions.length).fill(null);
+        let colorMode = 'normal';
+        let fontSize = 'medium';
+
+        // DOM elements
+        const introSection = document.getElementById('intro-section');
+        const testSection = document.getElementById('test-section');
+        const resultsSection = document.getElementById('results-section');
+        const questionContainer = document.getElementById('question-container');
+        const currentQuestionDisplay = document.getElementById('current-question');
+        const totalQuestionsDisplay = document.getElementById('total-questions');
+        const progressBar = document.getElementById('progress-bar');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const startTestBtn = document.getElementById('start-test');
+        const retakeTestBtn = document.getElementById('retake-test');
+        const settingsBtn = document.getElementById('settings-btn');
+        const settingsPanel = document.getElementById('settings-panel');
+        const closeSettingsBtn = document.getElementById('close-settings');
+        const applySettingsBtn = document.getElementById('apply-settings');
+        const colorModeRadios = document.getElementsByName('color-mode');
+        const decreaseFontBtn = document.getElementById('decrease-font');
+        const increaseFontBtn = document.getElementById('increase-font');
+        const fontSizeDisplay = document.getElementById('font-size-display');
+        const scoreCircle = document.getElementById('score-circle');
+        const scorePercent = document.getElementById('score-percent');
+        const scoreText = document.getElementById('score-text');
+        const interpretation = document.getElementById('interpretation');
+        const inattentionBar = document.getElementById('inattention-bar');
+        const hyperactivityBar = document.getElementById('hyperactivity-bar');
+        const impulsivityBar = document.getElementById('impulsivity-bar');
+        const inattentionScore = document.getElementById('inattention-score');
+        const hyperactivityScore = document.getElementById('hyperactivity-score');
+        const impulsivityScore = document.getElementById('impulsivity-score');
+
+        // Initialize the app
+        function init() {
+            totalQuestionsDisplay.textContent = questions.length;
+            
+            // Event listeners
+            startTestBtn.addEventListener('click', startTest);
+            prevBtn.addEventListener('click', prevQuestion);
+            nextBtn.addEventListener('click', nextQuestion);
+            submitBtn.addEventListener('click', showResults);
+            retakeTestBtn.addEventListener('click', retakeTest);
+            settingsBtn.addEventListener('click', openSettings);
+            closeSettingsBtn.addEventListener('click', closeSettings);
+            applySettingsBtn.addEventListener('click', applySettings);
+            decreaseFontBtn.addEventListener('click', decreaseFontSize);
+            increaseFontBtn.addEventListener('click', increaseFontSize);
+            
+            // Load saved settings if any
+            loadSettings();
+        }
+
+        // Start the test
+        function startTest() {
+            introSection.classList.add('hidden');
+            testSection.classList.remove('hidden');
+            resultsSection.classList.add('hidden');
+            
+            currentQuestion = 0;
+            answers = Array(questions.length).fill(null);
+            
+            showQuestion();
+        }
+
+        // Show current question
+        function showQuestion() {
+            currentQuestionDisplay.textContent = currentQuestion + 1;
+            
+            // Update progress bar
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            progressBar.style.setProperty('--progress', `${progress}%`);
+            
+            // Update navigation buttons
+            prevBtn.classList.toggle('hidden', currentQuestion === 0);
+            nextBtn.classList.toggle('hidden', currentQuestion === questions.length - 1);
+            submitBtn.classList.toggle('hidden', currentQuestion !== questions.length - 1);
+            
+            // Clear previous question
+            questionContainer.innerHTML = '';
+            
+            // Create question element
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'space-y-4';
+            
+            const questionText = document.createElement('h3');
+            questionText.className = 'text-xl font-semibold text-gray-800';
+            questionText.textContent = questions[currentQuestion].text;
+            questionDiv.appendChild(questionText);
+            
+            // Create answer options
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'space-y-3';
+            
+            const frequencies = [
+                { value: 0, label: "Nunca" },
+                { value: 1, label: "Raramente" },
+                { value: 2, label: "Às vezes" },
+                { value: 3, label: "Frequentemente" },
+                { value: 4, label: "Muito frequentemente" }
+            ];
+            
+            frequencies.forEach((freq, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'flex items-center';
+                
+                const input = document.createElement('input');
+                input.type = 'radio';
+                input.name = 'frequency';
+                input.value = freq.value;
+                input.id = `option-${index}`;
+                input.className = 'h-5 w-5 text-blue-600';
+                
+                if (answers[currentQuestion] === freq.value) {
+                    input.checked = true;
+                }
+                
+                const label = document.createElement('label');
+                label.htmlFor = `option-${index}`;
+                label.className = 'ml-2 text-gray-700 cursor-pointer';
+                label.textContent = freq.label;
+                
+                optionDiv.appendChild(input);
+                optionDiv.appendChild(label);
+                optionsDiv.appendChild(optionDiv);
+            });
+            
+            questionDiv.appendChild(optionsDiv);
+            questionContainer.appendChild(questionDiv);
+        }
+
+        // Go to previous question
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                saveAnswer();
+                currentQuestion--;
+                showQuestion();
+            }
+        }
+
+        // Go to next question
+        function nextQuestion() {
+            saveAnswer();
+            
+            // Validate current answer
+            if (answers[currentQuestion] === null) {
+                alert("Por favor, selecione uma resposta antes de continuar.");
+                return;
+            }
+            
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                showQuestion();
+            }
+        }
+
+        // Save current answer
+        function saveAnswer() {
+            const selectedOption = document.querySelector('input[name="frequency"]:checked');
+            if (selectedOption) {
+                answers[currentQuestion] = parseInt(selectedOption.value);
+            }
+        }
+
+        // Show results
+        function showResults() {
+            saveAnswer();
+            
+            // Calculate scores
+            const inattentionScoreValue = answers.slice(0, 9).reduce((sum, answer) => sum + (answer || 0), 0);
+            const hyperactivityScoreValue = answers.slice(9, 15).reduce((sum, answer) => sum + (answer || 0), 0);
+            const impulsivityScoreValue = answers.slice(15).reduce((sum, answer) => sum + (answer || 0), 0);
+            
+            const totalScore = inattentionScoreValue + hyperactivityScoreValue + impulsivityScoreValue;
+            const maxScore = 72; // 18 questions * 4 (max value per question)
+            const scorePercentage = Math.round((totalScore / maxScore) * 100);
+            
+            // Update UI with results
+            testSection.classList.add('hidden');
+            resultsSection.classList.remove('hidden');
+            
+            // Animate score circle
+            const circumference = 283; // 2 * π * r (where r=45)
+            const offset = circumference - (scorePercentage / 100) * circumference;
+            scoreCircle.style.strokeDashoffset = offset;
+            
+            // Update score text
+            scorePercent.textContent = `${scorePercentage}%`;
+            
+            // Update category scores
+            inattentionBar.style.width = `${(inattentionScoreValue / 36) * 100}%`;
+            hyperactivityBar.style.width = `${(hyperactivityScoreValue / 24) * 100}%`;
+            impulsivityBar.style.width = `${(impulsivityScoreValue / 12) * 100}%`;
+            
+            inattentionScore.textContent = `${inattentionScoreValue}/36`;
+            hyperactivityScore.textContent = `${hyperactivityScoreValue}/24`;
+            impulsivityScore.textContent = `${impulsivityScoreValue}/12`;
+            
+            // Provide interpretation
+            let interpretationText = '';
+            if (totalScore < 30) {
+                interpretationText = `
+                    <p>Seu resultado sugere poucos sinais de TDAH. No entanto, se você ainda tiver preocupações sobre sua atenção ou comportamento, considere conversar com um profissional de saúde.</p>
+                `;
+            } else if (totalScore < 50) {
+                interpretationText = `
+                    <p>Seu resultado sugere alguns sinais de TDAH que podem merecer atenção. Embora não seja conclusivo, você pode se beneficiar de uma avaliação profissional para explorar essas questões com mais profundidade.</p>
+                    <p class="mt-2">Muitas pessoas com resultados semelhantes apresentam desafios em áreas específicas como organização, foco ou controle de impulsos.</p>
+                `;
+            } else {
+                interpretationText = `
+                    <p>Seu resultado sugere vários sinais consistentes com TDAH. Isso não significa que você definitivamente tem TDAH, mas indica que uma avaliação profissional pode ser útil.</p>
+                    <p class="mt-2">Pessoas com resultados semelhantes frequentemente se beneficiam de estratégias específicas e, em alguns casos, tratamento profissional para melhorar sua qualidade de vida.</p>
+                `;
+            }
+            
+            interpretation.innerHTML = interpretationText;
+            
+            // Additional feedback based on categories
+            if (inattentionScoreValue >= 20) {
+                interpretation.innerHTML += `
+                    <div class="mt-4 p-4 bg-blue-50 rounded-lg">
+                        <h4 class="font-semibold text-blue-800 mb-2">Desatenção</h4>
+                        <p class="text-blue-700">Seus resultados indicam desafios significativos com atenção e foco, que são características centrais do TDAH do tipo desatento.</p>
+                    </div>
+                `;
+            }
+            
+            if (hyperactivityScoreValue >= 15) {
+                interpretation.innerHTML += `
+                    <div class="mt-4 p-4 bg-purple-50 rounded-lg">
+                        <h4 class="font-semibold text-purple-800 mb-2">Hiperatividade</h4>
+                        <p class="text-purple-700">Seus resultados sugerem níveis elevados de energia e inquietação, que são características do TDAH do tipo hiperativo-impulsivo.</p>
+                    </div>
+                `;
+            }
+            
+            if (impulsivityScoreValue >= 8) {
+                interpretation.innerHTML += `
+                    <div class="mt-4 p-4 bg-green-50 rounded-lg">
+                        <h4 class="font-semibold text-green-800 mb-2">Impulsividade</h4>
+                        <p class="text-green-700">Seus resultados indicam tendências impulsivas, que podem afetar tomadas de decisão e relacionamentos.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Retake the test
+        function retakeTest() {
+            resultsSection.classList.add('hidden');
+            introSection.classList.remove('hidden');
+        }
+
+        // Settings functions
+        function openSettings() {
+            settingsPanel.classList.remove('hidden');
+        }
+
+        function closeSettings() {
+            settingsPanel.classList.add('hidden');
+        }
+
+        function applySettings() {
+            // Apply color mode
+            const selectedColorMode = document.querySelector('input[name="color-mode"]:checked').value;
+            if (selectedColorMode !== colorMode) {
+                colorMode = selectedColorMode;
+                document.body.classList.remove('protanopia', 'deuteranopia', 'tritanopia');
+                if (colorMode !== 'normal') {
+                    document.body.classList.add(colorMode);
+                }
+            }
+            
+            // Apply font size
+            document.body.className = `bg-gray-50 min-h-screen font-sans ${fontSize === 'large' ? 'text-lg' : fontSize === 'small' ? 'text-sm' : ''}`;
+            
+            closeSettings();
+            saveSettings();
+        }
+
+        function decreaseFontSize() {
+            if (fontSize === 'large') {
+                fontSize = 'medium';
+                fontSizeDisplay.textContent = 'Médio';
+            } else if (fontSize === 'medium') {
+                fontSize = 'small';
+                fontSizeDisplay.textContent = 'Pequeno';
+            }
+        }
+
+        function increaseFontSize() {
+            if (fontSize === 'small') {
+                fontSize = 'medium';
+                fontSizeDisplay.textContent = 'Médio';
+            } else if (fontSize === 'medium') {
+                fontSize = 'large';
+                fontSizeDisplay.textContent = 'Grande';
+            }
+        }
+
+        // Save settings to localStorage
+        function saveSettings() {
+            const settings = {
+                colorMode,
+                fontSize
+            };
+            localStorage.setItem('tdahCheckSettings', JSON.stringify(settings));
+        }
+
+        // Load settings from localStorage
+        function loadSettings() {
+            const savedSettings = localStorage.getItem('tdahCheckSettings');
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+                colorMode = settings.colorMode || 'normal';
+                fontSize = settings.fontSize || 'medium';
+                
+                // Apply saved color mode
+                document.querySelector(`input[name="color-mode"][value="${colorMode}"]`).checked = true;
+                
+                // Apply saved font size
+                fontSizeDisplay.textContent = 
+                    fontSize === 'large' ? 'Grande' : 
+                    fontSize === 'small' ? 'Pequeno' : 'Médio';
+                
+                // Apply immediately if needed
+                if (colorMode !== 'normal') {
+                    document.body.classList.add(colorMode);
+                }
+                if (fontSize !== 'medium') {
+                    document.body.classList.add(fontSize === 'large' ? 'text-lg' : 'text-sm');
+                }
+            }
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
