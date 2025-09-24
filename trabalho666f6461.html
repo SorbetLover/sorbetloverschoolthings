@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>titulo</title>
+    <style>
+        #jancu {
+            position: absolute;
+            left: 10%;
+            top: 14%;
+            font-size: 120%;
+        }
+        #osso {
+            position: absolute;
+            left: 4.5%;
+            top:15%;     
+        }
+        #ossomania {
+            position: absolute;
+            left: 4.5%;
+            top: 18%;     
+        }
+        #RWQFSFASXC {
+            position: absolute;
+            left: 7%;
+            top: 15%;
+        }
+        #merda{
+            position: absolute;
+            left: 8%;
+            top: 1%;
+            font-size: 300%;
+        }
+
+    </style>
+</head>
+<body>
+    <h2 id="merda">Lista</h2>
+    <div>
+        <input type="text" id="RWQFSFASXC">
+        <button id="osso">add</button>
+        <button id="ossomania">remove</button>
+
+    </div>
+    <ul id="careca"></ul>
+    <p id="jancu"></p>
+
+    <script>
+        const careca = document.getElementById("careca");
+        const RWQFSFASXC = document.getElementById("RWQFSFASXC");
+        const osso = document.getElementById("osso");
+        const jancu = document.getElementById("jancu");
+        var cool2 = [];
+        osso.addEventListener("click", function(){
+            if(RWQFSFASXC.value === "") return;
+            /// ve se o texto não é nulo e faz um push
+            cool2.push(RWQFSFASXC.value)
+            addshit();
+        });
+        document.getElementById("ossomania").addEventListener("click", function(){
+            /// remove o texto escrito na mesma caixa que adiciona
+            for(let i = 0; i < cool2.length; i++){
+                if(cool2[i] == RWQFSFASXC.value){
+                    cool2.splice(i,1);
+                    addshit();
+                }
+            }
+        });
+        function addshit(){
+            /// adiciona com um loop, porque não uso forEach
+            RWQFSFASXC.value = "";
+            jancu.innerText = "";
+            for(let i = 0; i < cool2.length; i++){
+                jancu.innerText += "\n -    " + cool2[i];
+            }
+        }
+
+        /// o array armazena os textos em uma so variavel
+        // sem mechar na variavel do texto, não iria funcionar
+        // um loop entre todos os membros do array checando se aquele é o escrito, se sim, tira do array e recria a lista, se não, só prossegue
+    </script>
+
+</body>
