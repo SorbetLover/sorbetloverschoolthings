@@ -9,34 +9,37 @@
     <script src='main.js'></script>
    
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Changa+One:ital@0;1&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Changa+One:ital@0;1&display=swap" rel="stylesheet">
+
+
     <style>
         
         body {
             background-color: #000000;
             color: #fff;
+            width: calc(100vw - 18.5px);
         }
+
         header {
             background: #000000;
-            background: linear-gradient(90deg, rgba(0, 0, 0, 1) 0%, rgba(3, 112, 255, 1) 100%);
-            width: 200vw;
+            background: linear-gradient(90deg, rgb(16, 16, 16) 0%, rgba(3, 112, 255, 1) 100%);
+            box-sizing: border-box;
             height: 80px;
-            margin-top: -8px;
-            margin-left: -8px;
             color: #fff;
+            margin: -10px;
         }
-        #htexts {
+        .htexts {
             position: relative;
             margin-left: 20px;
             font-size: 80px;
             top: -10px;
         }
         #jancu {
-            position: relative;
-            width: 100px;
-            top: 10px;
+            position: absolute;
+            width: 60px;
+            top: 20px;
             
         }
         .pag {
@@ -45,21 +48,18 @@
         }
         .buts {
             position: relative;
-            top: -100px;
-            left: 190px;
             display: grid;
-
-            /* Creates 3 columns of equal flexible width */
-        
-            grid-template-columns: 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr   ; 
-            /* Creates a gap of 10px between grid cells */
+            top: 20px;
+            left: 110px;
+            max-width: 1333px;
+            grid-template-columns: 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr ; 
             gap: 30px; 
             font-family: "Changa One", sans-serif;
             font-weight: 400;
             font-style: normal;  
                         
         }
-        #butico {
+        #butico{
             background: #8102ff;
             background: linear-gradient(90deg, rgba(129, 2, 255, 1) 10%, rgba(228, 130, 255, 1) 49%, rgba(255, 136, 0, 1) 89%);
             border-radius: 100px 100px 100px 100px;
@@ -70,10 +70,38 @@
             align-items: center;
             justify-content: center;
         }
+        
+        #buticoano{
+            background: #8102ff;
+            background: linear-gradient(90deg, rgba(129, 2, 255, 1) 10%, rgba(228, 130, 255, 1) 49%, rgba(255, 136, 0, 1) 89%);
+            border-radius: 100px 100px 100px 100px;
+            display: flex;
+            width: 120px;
+            height: 40px;
+            font-size: auto;
+            align-items: center;
+            justify-content: center;
+        }
+        /* * {
+            border: 1px solid red;
+        } */
+
+        #anochoosing {
+            width: 90px;
+            border-color: #00000000;
+            
+            background-color: #00000000;
+            color: #FFF;
+        }
+        #anochoosing option {
+            color: #FFF;
+            background-color: #000000;
+        }
+
     </style>
 </head>
-<header>
-    <div id="htexts">
+<header onload="makeanos()">
+    <div class="htexts">
         <img id="jancu" src="112 Sem Título_20260225115644.png" alt="" onclick="window.location.href='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJPbl00vcB0WTL5V8qCUJZUrrTQMrRecvHWA&s'">
     </div>
     
@@ -86,12 +114,19 @@
         <div id="butico">jazz</div>
         <div id="butico">rock</div>
         <div id="butico">metal</div>
-        <div id="butico">roberto carlos</div>
+        <div id="buticoano"> 
+            <select name="anothing" id="anochoosing">
+            </select> 
+
+        </div>
     </div>
 </header>
 <body>
     <div class="pag">
-        pennywise safadinho <br>
+        <br>
+        <br>
+        <br>
+            pennywise safadinho <br>
         vem me comer gostozinho <br>
         fudendo meu cuzinho <br>
         no esgoto <br>
@@ -100,5 +135,17 @@
         vem me comer
     </div>
 
+    <script>
+        makeanos();
+        function makeanos(){
+            let buticoano = document.getElementById("anochoosing");
+            for(let i = 2026; i >= 1910; i--){
+                const buticooption = document.createElement("option");
+                buticooption.text = i;
+                buticoano.value = i;
+                buticoano.appendChild(buticooption);
+            }
+        }
+    </script>
 </body>
 </html>
