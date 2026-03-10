@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+    <script src='main.js'></script>
+   
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Changa+One:ital@0;1&display=swap" rel="stylesheet">
+
+
+    <style>
+        
+        body {
+            background-color: #000000;
+            color: #fff;
+            width: calc(100vw - 18.5px);
+        }
+
+        header {
+            background: #000000;
+            background: linear-gradient(90deg, rgb(16, 16, 16) 0%, rgba(3, 112, 255, 1) 100%);
+            box-sizing: border-box;
+            height: 80px;
+            color: #fff;
+            margin: -10px;
+        }
+        .htexts {
+            position: relative;
+            margin-left: 20px;
+            font-size: 80px;
+            top: -10px;
+        }
+        #jancu {
+            position: absolute;
+            width: 60px;
+            top: 20px;
+            
+        }
+        .pag {
+            margin-left: 130px;
+            font-size: 30px;
+        }
+        .buts {
+            position: relative;
+            display: grid;
+            top: 20px;
+            left: 110px;
+            max-width: calc(100% - 300px);
+            grid-template-columns: 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr 0.02fr ; 
+            gap:2%; 
+            font-family: "Changa One", sans-serif;
+            font-weight: 400;
+            font-style: normal;  
+                        
+        }
+        #butico{
+            background: #8102ff;
+            background: linear-gradient(90deg, rgba(129, 2, 255, 1) 10%, rgba(228, 130, 255, 1) 49%, rgba(255, 136, 0, 1) 89%);
+            border-radius: 100px 100px 100px 100px;
+            display: flex;
+            width: 120px;
+            height: 40px;
+            font-size: auto;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #buticoano{
+            background: #8102ff;
+            background: linear-gradient(90deg, rgba(129, 2, 255, 1) 10%, rgba(228, 130, 255, 1) 49%, rgba(255, 136, 0, 1) 89%);
+            border-radius: 100px 100px 100px 100px;
+            display: flex;
+            width: 120px;
+            height: 40px;
+            font-size: auto;
+            align-items: center;
+            justify-content: center;
+        }
+        /* * {
+            border: 1px solid red;
+        } */
+
+        #anochoosing {
+            width: 90px;
+            border-color: #00000000;
+            
+            background-color: #00000000;
+            color: #FFF;
+        }
+        #anochoosing option {
+            color: #FFF;
+            background-color: #000000;
+        }
+
+    </style>
+</head>
+<header onload="makeanos()">
+    <div class="htexts">
+        <img id="jancu" src="112 Sem Título_20260225115644.png" alt="" onclick="window.location.href='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJPbl00vcB0WTL5V8qCUJZUrrTQMrRecvHWA&s'">
+    </div>
+    
+    <div class="buts">
+        <div id="butico">pop</div>
+        <div id="butico">funk</div>
+        <div id="butico">kpop</div>
+        <div id="butico">gospel</div>
+        <div id="butico">jpop</div>
+        <div id="butico">jazz</div>
+        <div id="butico">rock</div>
+        <div id="butico">metal</div>
+        <div id="buticoano"> 
+            <select name="anothing" id="anochoosing">
+            </select> 
+
+        </div>
+    </div>
+</header>
+<body>
+    <div class="pag">
+        <br>
+        Lorem ipsum dolor, sit amet consectetur adipisicing elit. <br> Id doloremque itaque aperiam repellendus similique illo,<br> nam odio repudiandae,<br> accusamus maiores quo voluptatibus esse atque optio ipsum soluta,<br> dolorum veniam quas!
+    </div>
+
+    <script>
+        makeanos();
+        function makeanos(){
+            let buticoano = document.getElementById("anochoosing");
+            for(let i = 2026; i >= 1910; i--){
+                const buticooption = document.createElement("option");
+                buticooption.text = i;
+                buticoano.value = i;
+                buticoano.appendChild(buticooption);
+            }
+        }
+    </script>
+</body>
+</html>

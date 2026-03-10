@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <title>SorbetLover's Shits!!!!!!!!!!!!!!!!!!!1</title>
+
+        <style>
+            #txt1 {
+                color: #FFFFFF;
+                transform: scale(3);
+                transform-origin: left;
+                position: relative;
+                left: 30px;
+                top: 30px;
+            }
+            input[type="button"] {
+                scale: 2;            
+                transform-origin: left;
+                left: 30px;
+            }
+
+            
+        </style>
+    </head>
+
+    <body onload="firefuncs()" style="background-color: #222222">
+        <h1 id="txt1">texto foda</h1>
+        <br>
+        <input id="b1" type="button" value="links" onclick="openLink(1)">
+        <!-- <br>
+        <br> -->
+        <br>
+        <input id="b2" type="button" value="draco calc" onclick="openLink(0)">
+    </body>
+
+
+
+    <script>
+        
+        function firefuncs() {
+            let d = 1;
+            for (let i of document.getElementsByTagName("input")) {
+                if (i.type === "button") {
+                    i.style.position = "relative"; // necessário se quiser mover com top
+                    i.style.top = ((30 * d) + 30) + "px";
+                    d++;
+                }
+            }
+            console.log("loaded")
+        }
+
+        function openLink(arg){
+            switch(arg){
+                case 0:
+                window.location.href = "draco calc.html";
+                break
+                case 1:
+                window.location.href = "links.html";
+                break
+            }
+        }
+        
+    </script>
+</html>
